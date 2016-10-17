@@ -123,5 +123,5 @@ print(df_user.iloc[:12, :7])
 
 
 elapsed_time = time.time() - start_time
-print(elapsed_time) 
+print('\ntime elapsed: '+ str(elapsed_time)) 
 
