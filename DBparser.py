@@ -76,39 +76,33 @@ class user_details:
         
     def calc_nr_retweets_done(self, user_name):
         return df_tweets.loc[df_tweets['user_name'] == user_name, 'retweet'].sum()
-    
-    def calc_nr_tweets_retweeted(self, text):
-        
-        if text[:4] == 'RT @':
-            user_name = text.split()[1]
-            user_name = user_name[1:len(user_name)-1]
-            if user_name in unique_names:
-                df_user.nr_tweets_retweeted[df_user['user_name'] == user_name] += 1
             
     def calc_nr_retweet_dif_users(self, user_name):
             return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'user_name'].nunique()
-            
-#print(df_tweets.loc[df_tweets['ret_orig_user'] == 'diggingplatinum'][ 'user_name'].nunique()  )
+ 
+    def calc_nr_tweets_dif_retweeted(self, user_name):
+        df_tweets.loc[df_tweets['ret_orig_user'] == 'user_name', 'tweet_text'].nunique()
 
-nr_retweet_dif_users = []
-nr_of_retweets_done = []
-retweet_users = []
-nr_of_tweets_retweeted = []
+
+
 nr_of_tweets = []
 indexes = []
+nr_of_retweets_done = []                
+nr_retweet_dif_users = []                
+nr_of_dif_tweets_retweeted= []
+
 for name in unique_names:
     nr_of_tweets = nr_of_tweets + [user_details().calc_nr_tweets(name)]
     indexes = indexes + [user_details().set_tweet_indexes(name)]
     nr_of_retweets_done = nr_of_retweets_done + [user_details().calc_nr_retweets_done(name)]
     nr_retweet_dif_users = nr_retweet_dif_users + [user_details().calc_nr_retweet_dif_users(name)]
-    #nr_of_tweets_retweeted = nr_of_tweets_retweeted + user_details().calc_nr_tweets_retweeted(name)
-    
-   
+    nr_of_dif_tweets_retweeted = nr_of_dif_tweets_retweeted + [user_details().calc_nr_tweets_dif_retweeted(name)]
+     
     
 data_user = {'user_name': unique_names, 'nr_of_tweets': nr_of_tweets, 'indexes_of_tweets_in_.csv':indexes, 'nr_of_retweets_done': nr_of_retweets_done,\
-             'nr_of_dif_users_that_retweeted': nr_retweet_dif_users}
+             'nr_of_dif_users_that_retweeted': nr_retweet_dif_users, 'nr_of_dif_tweets_retweeted': nr_of_dif_tweets_retweeted}
 columns_user = ['user_name', 'nr_of_tweets', 'indexes_of_tweets_in_.csv', 'nr_of_retweets_done', 'nr_of_dif_users_that_retweeted',\
-                ]
+                'nr_of_dif_tweets_retweeted']
    
 df_user = pd.DataFrame(data_user)
 df_user = df_user[columns_user]
@@ -119,7 +113,7 @@ df_user = df_user[columns_user]
 
 
 
-print(df_user.iloc[:12, :7])
+#print(df_user.iloc[:12, :7])
 
 
 elapsed_time = time.time() - start_time
