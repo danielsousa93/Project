@@ -55,8 +55,8 @@ for tweet in df_tweets['tweet_text']:
     retweets = retweets + [tweet_parser().detect_retweets(tweet)[0]]
     orig_user_of_tweet = orig_user_of_tweet + [tweet_parser().detect_retweets(tweet)[1]]
 
-df_tweets['retweet'] = retweets;
-df_tweets['ret_orig_user'] = orig_user_of_tweet;
+df_tweets['retweet'] = retweets
+df_tweets['ret_orig_user'] = orig_user_of_tweet
 #print(df_tweets)
 
     
@@ -78,10 +78,10 @@ class user_details:
         return df_tweets.loc[df_tweets['user_name'] == user_name, 'retweet'].sum()
             
     def calc_nr_retweet_dif_users(self, user_name):
-            return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'user_name'].nunique()
+        return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'user_name'].nunique()
  
     def calc_nr_tweets_dif_retweeted(self, user_name):
-        df_tweets.loc[df_tweets['ret_orig_user'] == 'user_name', 'tweet_text'].nunique()
+        return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'tweet_text'].nunique()
 
 
 
@@ -108,14 +108,13 @@ df_user = pd.DataFrame(data_user)
 df_user = df_user[columns_user]
 
 
-        
 
 
 
 
-#print(df_user.iloc[:12, :7])
+print(df_user.iloc[:12, :7])
 
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed: '+ str(elapsed_time)) 
+print('\ntime elapsed: '+ str(elapsed_time))
 
