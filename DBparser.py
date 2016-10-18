@@ -81,10 +81,28 @@ class user_details:
         return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'user_name'].nunique()
  
     def calc_nr_tweets_dif_retweeted(self, user_name):
-        return df_tweets.loc[df_tweets['ret_orig_user'] == user_name, 'tweet_text'].nunique()
+        df_text = df_tweets
+        if len(df_text) > 0:
+            for row in df_text[df_text['ret_orig_user'] == user_name]['tweet_text']:
+                for word in row.split():
+                    if word[1:8] == 'ttps://': 
+                        new_row = row.replace(word, "")
+                        df_text.loc[df_text['tweet_text'] == row,'tweet_text'] = new_row 
+            #if user_name == 'bfsi_financial':
+            #    print(df_text[df_tweets['ret_orig_user'] == user_name]['tweet_text'].nunique())
+            #    print(df_text[df_tweets['ret_orig_user'] == user_name]['tweet_text'].unique())  
+            #    print(user_name)
+            return df_text[df_tweets['ret_orig_user'] == user_name]['tweet_text'].nunique()
+        
+        else:
+            return 0
+        
+       
 
+#word = 'ttps://'
+#print(df_tweets['tweet_text'][0].replace(word, ""))
 
-
+ 
 nr_of_tweets = []
 indexes = []
 nr_of_retweets_done = []                
@@ -92,11 +110,20 @@ nr_retweet_dif_users = []
 nr_of_dif_tweets_retweeted= []
 
 for name in unique_names:
-    nr_of_tweets = nr_of_tweets + [user_details().calc_nr_tweets(name)]
-    indexes = indexes + [user_details().set_tweet_indexes(name)]
+    '''-- O1 --'''
+    nr_of_tweets = nr_of_tweets + [user_details().calc_nr_tweets(name)] 
+    indexes = indexes + [user_details().set_tweet_indexes(name)] 
+    
+    '''-- R1 --'''
     nr_of_retweets_done = nr_of_retweets_done + [user_details().calc_nr_retweets_done(name)]
-    nr_retweet_dif_users = nr_retweet_dif_users + [user_details().calc_nr_retweet_dif_users(name)]
+    
+    '''-- R2 --'''
     nr_of_dif_tweets_retweeted = nr_of_dif_tweets_retweeted + [user_details().calc_nr_tweets_dif_retweeted(name)]
+    
+    '''-- R3 --'''
+    nr_retweet_dif_users = nr_retweet_dif_users + [user_details().calc_nr_retweet_dif_users(name)]
+    
+  
      
     
 data_user = {'user_name': unique_names, 'nr_of_tweets': nr_of_tweets, 'indexes_of_tweets_in_.csv':indexes, 'nr_of_retweets_done': nr_of_retweets_done,\
