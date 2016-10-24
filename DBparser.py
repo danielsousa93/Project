@@ -69,17 +69,20 @@ class tweet_parser:
         for name in users_mentioned:
             if name in unique_names:
                 df_tweets.loc[df_tweets['user_name'] == name, 'users_that_mentioned_the_user'] = user_name +  ' ' + df_tweets.loc[df_tweets['user_name'] == name, 'users_that_mentioned_the_user']    
-     
+    
+    def detect_conversations(self, text, user_name):
+        if text[:1] == '@': 
+            df_tweets.loc[df_tweets['user_name'] == user_name, 'nr_of_conversation_tweets_done_by_the_user'] +=1
                
         
 users_that_mentioned_the_user = []        
 
 data_tweets = {'user_name': user_names, 'user_followers': user_followers, 'tweet_date': tweet_date, 'tweet_text': tweet_text,\
                'retweets_flag': 0, 'ret_orig_user': 0, 'hashtags_list': 0, 'users_mentioned': 0, 'nr_of_users_mentioned': 0,\
-               'mentions_done_with_him': 0, 'users_that_mentioned_the_user': ''}
+               'mentions_done_with_him': 0, 'users_that_mentioned_the_user': '', 'nr_of_conversation_tweets_done_by_the_user': 0}
 df_tweets = pd.DataFrame(data_tweets)
 columns_tweets = ['user_name', 'user_followers', 'tweet_date', 'tweet_text', 'retweets_flag', 'ret_orig_user', 'hashtags_list', 'users_mentioned'\
-                  , 'nr_of_users_mentioned', 'mentions_done_with_him', 'users_that_mentioned_the_user']
+                  , 'nr_of_users_mentioned', 'mentions_done_with_him', 'users_that_mentioned_the_user', 'nr_of_conversation_tweets_done_by_the_user']
 df_tweets = df_tweets[columns_tweets]
 
 
@@ -107,6 +110,8 @@ for tweet in df_tweets.itertuples():
         users_mentioned = users_mentioned + [new_users_mentioned]
         nr_of_users_mentioned = nr_of_users_mentioned + [new_nr_of_users_mentioned]
         
+        tweet_parser().detect_conversations(tweet[4], tweet[1])
+        
     
 df_tweets['retweets_flag'] = retweets_flag
 df_tweets['ret_orig_user'] = orig_user_of_tweet
@@ -122,7 +127,7 @@ for tweet in df_tweets.itertuples():
 elapsed_time = time.time() - start_time
 print('\ntime elapsed in df_tweets: '+ str(elapsed_time))
 
-
+#print(df_tweets)
 
 
 class user_details:     
@@ -256,4 +261,8 @@ df_user = df_user[columns_user]
 elapsed_time = time.time() - start_time
 print('\ntime elapsed in df_tweets + df_users: '+ str(elapsed_time))
 
+df_tweets.to_pickle('df_tweets.h5')
+df_user.to_pickle('df_user.h5')
 
+elapsed_time = time.time() - start_time
+print('\ntime elapsed saving files: '+ str(elapsed_time))
