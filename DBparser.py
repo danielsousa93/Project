@@ -133,6 +133,11 @@ print('\ntime elapsed in df_tweets: '+ str(elapsed_time))
 class user_details:     
     def calc_nr_tweets(self, user_name):
         return df_tweets['user_name'].value_counts()[user_name]
+    
+    def calc_nr_of_original_tweets(self, user_name):
+        retweets_nr = len(df_tweets[(df_tweets['user_name'] == user_name) & (df_tweets['retweets_flag'] == 1)])
+        orig_tweet_nr = user_details().calc_nr_tweets(user_name)
+        return orig_tweet_nr - retweets_nr
 
     def set_tweet_indexes(self, user_name):
         return df_tweets[df_tweets['user_name'] == user_name].index.tolist()
@@ -181,14 +186,16 @@ class user_details:
             final_users_list = len(list(set(array)))
         return final_users_list
         
-         
-        
+
+      
+#print(len(df_tweets[(df_tweets['user_name'] == 'LloydCreekStock') & (df_tweets['retweets_flag'] == 1)]))  
 #print((user_details().calc_nr_of_mentions_done_to_the_user('JustinPulitzer')))
 #print(user_details().nr_of_dif_users_that_metioned_the_user('JustinPulitzer'))
 
 
  
 nr_of_tweets = []
+nr_of_original_tweets_done = []
 indexes = []
 nr_of_retweets_done = []                
 nr_retweet_dif_users = []                
@@ -206,9 +213,12 @@ nr_of_dif_users_that_metioned_the_user = []
 
 
 for name in unique_names:
-    '''-- O1 --'''
+    '''-- nr of tweets --'''
     nr_of_tweets = nr_of_tweets + [user_details().calc_nr_tweets(name)] 
     indexes = indexes + [user_details().set_tweet_indexes(name)] 
+    
+    '''-- O1 --'''
+    nr_of_original_tweets_done = nr_of_original_tweets_done + [user_details().calc_nr_of_original_tweets(name)]
     
     '''-- R1 --'''
     nr_of_retweets_done = nr_of_retweets_done + [user_details().calc_nr_retweets_done(name)]
@@ -241,11 +251,12 @@ data_user = {'user_name': unique_names, 'nr_of_tweets': nr_of_tweets, 'indexes_o
              'dif_hashtags': dif_hashtags, 'nr_dif_hashtags': nr_dif_hashtags, 'nr_of_mentions_done_by_the_user': nr_of_mentions_done_by_the_user,\
              'nr_of_dif_users_mentioned_by_the_user': nr_of_dif_users_mentioned_by_the_user,\
              'nr_of_mentions_done_to_the_user': nr_of_mentions_done_to_the_user,\
-             'nr_of_dif_users_that_metioned_the_user': nr_of_dif_users_that_metioned_the_user}
+             'nr_of_dif_users_that_metioned_the_user': nr_of_dif_users_that_metioned_the_user,\
+             'nr_of_original_tweets_done': nr_of_original_tweets_done}
 columns_user = ['user_name', 'nr_of_tweets', 'indexes_of_tweets_in_.csv', 'nr_of_retweets_done', 'nr_of_dif_users_that_retweeted',\
                 'nr_of_dif_tweets_retweeted', 'dif_hashtags', 'nr_dif_hashtags', 'nr_of_mentions_done_by_the_user',\
                 'nr_of_dif_users_mentioned_by_the_user', 'nr_of_mentions_done_to_the_user',\
-                'nr_of_dif_users_that_metioned_the_user']
+                'nr_of_dif_users_that_metioned_the_user', 'nr_of_original_tweets_done']
    
 df_user = pd.DataFrame(data_user)
 df_user = df_user[columns_user]
@@ -255,7 +266,7 @@ df_user = df_user[columns_user]
     
 
 
-#print(df_user.iloc[18:23, : len(columns_user)])
+print(df_user.iloc[1:15, : len(columns_user)])
 #print(df_user[df_user['user_name'] == 'TheStreet'])
 
 elapsed_time = time.time() - start_time
