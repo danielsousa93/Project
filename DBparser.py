@@ -74,8 +74,7 @@ class tweet_parser:
         if text[:1] == '@': 
             df_tweets.loc[df_tweets['user_name'] == user_name, 'nr_of_conversation_tweets_done_by_the_user'] +=1
                
-        
-users_that_mentioned_the_user = []        
+              
 
 data_tweets = {'user_name': user_names, 'user_followers': user_followers, 'tweet_date': tweet_date, 'tweet_text': tweet_text,\
                'retweets_flag': 0, 'ret_orig_user': 0, 'hashtags_list': 0, 'users_mentioned': 0, 'nr_of_users_mentioned': 0,\
@@ -186,7 +185,8 @@ class user_details:
             final_users_list = len(list(set(array)))
         return final_users_list
         
-
+    def calc_nr_of_conversation_tweets_done_by_the_user(self, user_name):
+        return df_tweets.loc[df_tweets['user_name'] == user_name, 'nr_of_conversation_tweets_done_by_the_user'].iloc[0]
       
 #print(len(df_tweets[(df_tweets['user_name'] == 'LloydCreekStock') & (df_tweets['retweets_flag'] == 1)]))  
 #print((user_details().calc_nr_of_mentions_done_to_the_user('JustinPulitzer')))
@@ -206,7 +206,7 @@ nr_of_mentions_done_by_the_user = []
 nr_of_dif_users_mentioned_by_the_user = []
 nr_of_mentions_done_to_the_user = []
 nr_of_dif_users_that_metioned_the_user = []
-
+nr_of_conversation_tweets_done_by_the_user = []
 
 
 
@@ -244,6 +244,10 @@ for name in unique_names:
     
     '''-- M4 --'''
     nr_of_dif_users_that_metioned_the_user = nr_of_dif_users_that_metioned_the_user + [user_details().calc_nr_of_dif_users_that_metioned_the_user(name)]
+    
+    '''-- C1 --'''
+    nr_of_conversation_tweets_done_by_the_user = nr_of_conversation_tweets_done_by_the_user + [user_details().calc_nr_of_conversation_tweets_done_by_the_user(name)]
+    
 
     
 data_user = {'user_name': unique_names, 'nr_of_tweets': nr_of_tweets, 'indexes_of_tweets_in_.csv':indexes, 'nr_of_retweets_done': nr_of_retweets_done,\
@@ -252,11 +256,12 @@ data_user = {'user_name': unique_names, 'nr_of_tweets': nr_of_tweets, 'indexes_o
              'nr_of_dif_users_mentioned_by_the_user': nr_of_dif_users_mentioned_by_the_user,\
              'nr_of_mentions_done_to_the_user': nr_of_mentions_done_to_the_user,\
              'nr_of_dif_users_that_metioned_the_user': nr_of_dif_users_that_metioned_the_user,\
-             'nr_of_original_tweets_done': nr_of_original_tweets_done}
+             'nr_of_original_tweets_done': nr_of_original_tweets_done,\
+             'nr_of_conversation_tweets_done_by_the_user': nr_of_conversation_tweets_done_by_the_user}
 columns_user = ['user_name', 'nr_of_tweets', 'indexes_of_tweets_in_.csv', 'nr_of_retweets_done', 'nr_of_dif_users_that_retweeted',\
                 'nr_of_dif_tweets_retweeted', 'dif_hashtags', 'nr_dif_hashtags', 'nr_of_mentions_done_by_the_user',\
                 'nr_of_dif_users_mentioned_by_the_user', 'nr_of_mentions_done_to_the_user',\
-                'nr_of_dif_users_that_metioned_the_user', 'nr_of_original_tweets_done']
+                'nr_of_dif_users_that_metioned_the_user', 'nr_of_original_tweets_done', 'nr_of_conversation_tweets_done_by_the_user']
    
 df_user = pd.DataFrame(data_user)
 df_user = df_user[columns_user]
@@ -266,8 +271,8 @@ df_user = df_user[columns_user]
     
 
 
-print(df_user.iloc[1:15, : len(columns_user)])
-#print(df_user[df_user['user_name'] == 'TheStreet'])
+#print(df_user.iloc[1:500, : len(columns_user)]['nr_of_conversation_tweets_done_by_the_user'])
+#print(df_user[df_user['nr_of_conversation_tweets_done_by_the_user'] ])
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed in df_tweets + df_users: '+ str(elapsed_time))
