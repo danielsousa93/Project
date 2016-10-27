@@ -46,26 +46,39 @@ class features:
             return 0
         else:
             return nr_of_dif_tweets_retweeted*(np.log10(nr_retweet_dif_users))
-
+        
+    def calc_mentions(self, nr_of_mentions_done_by_the_user, nr_of_dif_users_mentioned_by_the_user, nr_of_mentions_done_to_the_user, nr_of_dif_users_that_metioned_the_user):
+        if (nr_of_mentions_done_by_the_user == 0 or nr_of_dif_users_mentioned_by_the_user == 0) and (nr_of_mentions_done_to_the_user == 0 or nr_of_dif_users_that_metioned_the_user == 0):
+            return 0
+        elif nr_of_mentions_done_by_the_user == 0 or nr_of_dif_users_mentioned_by_the_user == 0:
+            return nr_of_mentions_done_to_the_user*(np.log10(nr_of_dif_users_that_metioned_the_user)) 
+        elif nr_of_mentions_done_to_the_user == 0 or nr_of_dif_users_that_metioned_the_user == 0:
+            return -nr_of_mentions_done_by_the_user*(np.log10(nr_of_dif_users_mentioned_by_the_user)) 
+        else:
+            return nr_of_mentions_done_to_the_user*(np.log10(nr_of_dif_users_that_metioned_the_user)) - nr_of_mentions_done_by_the_user*(np.log10(nr_of_dif_users_mentioned_by_the_user))
+            
+              
 for cashtag in cashtag_list:
     names = []
     topic_connection = []
     topic_attitude = []
     no_talk = []
     retweets = []
+    mentions = []
     for line in df_user_by_company[cashtag].itertuples():
         names = names + [line[1]]
         topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
         topic_attitude = topic_attitude + [features().calc_topic_attitude(line[13], line[4])]
         no_talk = no_talk + [features().calc_no_talk(line[13], line[14])]
         retweets = retweets + [features().calc_retweets(line[5], line[6])]
+        mentions = mentions + [features().calc_mentions(line[9], line[10], line[11], line[12])]
                     #row = [1,2,1,1,1,1,1,1,1]
                     #df_companies[cashtag].loc[len(df_features)] = row
                     #df_companies[cashtag]
                     #df.loc[len(df)] = row
                   
-    data_user = {'user_name': names, 'topic_connection': topic_connection, 'topic_attitude': topic_attitude, 'no_talk': no_talk, 'retweets': retweets, 'mentions': 0, 'hashtags': 0,\
-           'no_similarity_between_tweets': 0, 'topic_tweets_ratio': 0} 
+    data_user = {'user_name': names, 'topic_connection': topic_connection, 'topic_attitude': topic_attitude, 'no_talk': no_talk, 'retweets': retweets,\
+                 'mentions': mentions, 'hashtags': 0, 'no_similarity_between_tweets': 0, 'topic_tweets_ratio': 0} 
     
     df_features_by_company[cashtag] = pd.DataFrame(data_user, columns = col)       
         #topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
@@ -86,7 +99,7 @@ columns = ['user_name', 'topic_connection', 'topic_attitude', 'no_talk', 'retwee
     # operate on DataFrame df for company name
 
 #print(df_companies['$MMM'].loc[df_companies['$MMM']['user_name'] == 'DougKass', 'topic_attitude'])
-print(df_features_by_company['$MMM'][:10])
+print(df_features_by_company['$WFC'][:100])
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed filling df_features_by_company: '+ str(elapsed_time))
