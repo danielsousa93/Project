@@ -1,6 +1,9 @@
 import pandas as pd
 import time
+import nltk
+import nltk.sentiment
 from SP500_DB import cashtag_list
+from nltk.corpus import twitter_samples
 
 start_time = time.time()
 
@@ -17,7 +20,7 @@ for cashtag in cashtag_list:
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed to read .h5 files: '+ str(elapsed_time))
-
-
-print(df_tweets_company['$WFC'])
+twitter_samples.fileids()
+print(twitter_samples)
+#print(df_tweets_company['$WFC'])
 #print(df_features_by_company['$WFC'])
