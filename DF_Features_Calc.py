@@ -1,9 +1,11 @@
 import pandas as pd
+import sys
 import time
 import numpy as np
 from SP500_DB import cashtag_list
 from collections import Counter
 import csv
+import datetime
 start_time = time.time()
 
 
@@ -15,7 +17,8 @@ start_time = time.time()
 ------------------------------ LOADING DATAFRAMES ------------------------------
 --------------------------------------------------------------------------------
 '''
-df_tweets = pd.read_pickle('df_tweets.h5')
+
+i=0
 
 df_user_by_company = {}
 newpath1 = r'D:\LiClipse Workspace\Project\DATAFRAMES df_user_by_company'
@@ -23,51 +26,105 @@ for cashtag in cashtag_list:
     df_user_by_company[cashtag] = pd.read_pickle(newpath1 + '\df_user_by_company'+ cashtag + '.h5')
 
 
+df_tweets = pd.read_pickle('df_tweets.h5')
+
+
 elapsed_time = time.time() - start_time
 print('\ntime elapsed to read .h5 files: '+ str(elapsed_time))
 
+for cashtag in cashtag_list:
+    for line in df_user_by_company[cashtag].itertuples():
+        i += 1
+
+print(i)
 '''
 --------------------------------------------------------------------------------
 --------------------------- LOADING DB USER_DETAILS ----------------------------
 --------------------------------------------------------------------------------
 '''
-print(df_user_by_company['$HAR'])
-
-with open('DB user_details.csv', 'r', encoding="utf-8") as file:
+with open('DB user_details oneweek.csv', 'r', encoding="utf-8") as file:
+#with open('DB user_details.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     
-    cashtags_index = []
-    user_names = []
-    tweet_date = []
-    nr_of_retweets_done_to_that_tweet = []
-    tweet_text = []
-    likes = []
-    users_mentioned_by_the_user = []
+    created_at = []
+    followers = []
+    following = []
+    total_nr_of_tweets_ever_done = []
+    lists_in = []
+    total_nr_of_likes = []
+
+    cashtag = 'initial'
     for line in reader:
+        if cashtag == 'initial':
+            cashtag = line[0]
+            
+            created_at = created_at + [line[2]]
+            followers = followers + [line[3]]
+            following = following + [line[4]]
+            total_nr_of_tweets_ever_done = total_nr_of_tweets_ever_done + [line[5]]
+            lists_in = lists_in + [line[6]]
+            total_nr_of_likes = total_nr_of_likes + [line[7]]
+            
+        elif line[0] == cashtag:
+            created_at = created_at + [line[2]]
+            followers = followers + [line[3]]
+            following = following + [line[4]]
+            total_nr_of_tweets_ever_done = total_nr_of_tweets_ever_done + [line[5]]
+            lists_in = lists_in + [line[6]]
+            total_nr_of_likes = total_nr_of_likes + [line[7]]
+            
+        elif line[0] != cashtag:
+            
+            data_user = {'created_at': created_at, 'followers': followers,\
+             'following': following, 'total_nr_of_tweets_ever_done': total_nr_of_tweets_ever_done,\
+             'lists_in': lists_in, 'total_nr_of_likes': total_nr_of_likes}
+            columns_tweets = ['created_at', 'followers', 'following', 'total_nr_of_tweets_ever_done', 'lists_in',\
+                      'total_nr_of_likes']
+            df_aux = pd.DataFrame(data_user, columns = columns_tweets)
+            
+            df_user_by_company[cashtag] = pd.concat([df_user_by_company[cashtag], df_aux], axis=1)
+            
+            cashtag = line[0]
+            
+            created_at = []
+            followers = []
+            following = []
+            total_nr_of_tweets_ever_done = []
+            lists_in = []
+            total_nr_of_likes = []
+            
+            created_at = created_at + [line[2]]
+            followers = followers + [line[3]]
+            following = following + [line[4]]
+            total_nr_of_tweets_ever_done = total_nr_of_tweets_ever_done + [line[5]]
+            lists_in = lists_in + [line[6]]
+            total_nr_of_likes = total_nr_of_likes + [line[7]]
         
-        data_user = {'created_at': line[2], 'followers': line[3],\
-             'following': line[4], 'total_nr_of_tweets_ever_done': line[5],\
-             'lists_in': line[6], 'total_nr_of_likes': line[7]}
-        columns_tweets = ['created_at', 'followers', 'following', 'total_nr_of_tweets_ever_done', 'lists_in',\
-                  'total_nr_of_likes']
-        df_user_by_company[cashtag] = pd.DataFrame(data_user, columns = columns_tweets)
-        
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'created_at'] = line[2]
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'followers'] = line[3]
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'following'] = line[4]
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'total_nr_of_tweets_ever_done'] = line[5]
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'lists_in'] = line[6]
-        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'total_nr_of_likes'] = line[7]
+        else:
+            print('Error reading DB user_details.csv')
+            sys.exit()
+            
+    data_user = {'created_at': created_at, 'followers': followers,\
+             'following': following, 'total_nr_of_tweets_ever_done': total_nr_of_tweets_ever_done,\
+             'lists_in': lists_in, 'total_nr_of_likes': total_nr_of_likes}
+    columns_tweets = ['created_at', 'followers', 'following', 'total_nr_of_tweets_ever_done', 'lists_in',\
+                      'total_nr_of_likes']
+    df_aux = pd.DataFrame(data_user, columns = columns_tweets)
+            
+    df_user_by_company[cashtag] = pd.concat([df_user_by_company[cashtag], df_aux], axis=1)        
+
+
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed loading user_details file: '+ str(elapsed_time))
+print('\ntime elapsed loading user_details file and filling df_user_by_company: '+ str(elapsed_time))
+
 '''
 --------------------------------------------------------------------------------
 ----------------------- PREPARING df_features_by_user_by_company -----------------------
 --------------------------------------------------------------------------------
 '''
-col = ['user_name', 'account_duration', 'topic_connection', 'talk', 'retweets_by_tweets',\
-       'retweets_by_user', 'mentions', 'hashtags', 'popularity', 'likes', 'account_activity']
+col = ['user_name', 'account_duration', 'account_activity', 'popularity', 'topic_connection',\
+           'likes', 'hashtags', 'retweets_by_tweets', 'retweets_by_user', 'mentions', 'talk'] 
 
 df_features_by_user_by_company = {}
 
@@ -129,7 +186,16 @@ print('\ntime elapsed creating df_scores: '+ str(elapsed_time))
 '''
 class features:
     def calc_account_duration_days(self, time_stamp):
-        return time.time() - float(time_stamp)
+        start = datetime.datetime.strptime(time_stamp, '%Y-%m-%d %H:%M:%S')
+        ends = datetime.datetime.now()
+        return (ends - start).days
+    
+    def calc_account_activity(self, total_nr_of_tweets_ever_done, account_duration):
+        print('entrou')
+        a = total_nr_of_tweets_ever_done/account_duration
+        print(a)
+        return total_nr_of_tweets_ever_done/account_duration
+
         
 '''
 class features:
@@ -175,38 +241,59 @@ class features:
 --------------------------------------------------------------------------------
 ----------------- CREATION OF DF_FEATURES_BY_USER_BY_COMPANY -------------------
 --------------------------------------------------------------------------------
-'''                
+'''            
+cashtag_list = ['$IRM']    
 for cashtag in cashtag_list:
     names = []
+    account_duration = []
+    account_activity = []
+    popularity = []
     topic_connection = []
-    topic_attitude = []
-    no_talk = []
-    retweets = []
-    mentions = []
+    likes = []
     hashtags = []
-    no_similarity_between_tweets = []
-    topic_tweets_ratio = []
+    retweets_by_tweets = []
+    retweets_by_user = []
+    mentions = []
+    talk = []
     for line in df_user_by_company[cashtag].itertuples():
-        names = names + [line[1]]
-        print(features().calc_account_duration_days(line[15]))
-        #topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
-        #topic_attitude = topic_attitude + [features().calc_topic_attitude(line[13], line[4])]
-        #no_talk = no_talk + [features().calc_no_talk(line[13], line[14])]
-        #retweets = retweets + [features().calc_retweets(line[5], line[6])]
-        #mentions = mentions + [features().calc_mentions(line[9], line[10], line[11], line[12])]
-        #hashtags = hashtags + [features().calc_hashtags(line[13], line[8])]
-        #no_similarity_between_tweets = no_similarity_between_tweets + [features().find_score_for_a_user(line[1])]   
-        #topic_tweets_ratio = topic_tweets_ratio + [features().calc_topic_tweets_ratio(line[13], line[8])]
-        
-                  
-    data_user = {'user_name': names, 'topic_connection': topic_connection, 'topic_attitude': topic_attitude, 'no_talk': no_talk, 'retweets': retweets,\
-                 'mentions': mentions, 'hashtags': hashtags, 'no_similarity_between_tweets': no_similarity_between_tweets, 'topic_tweets_ratio': topic_tweets_ratio} 
+        try:
+            names = names + [line[1]]
+            
+            new_account_duration = features().calc_account_duration_days(line[13])
+            account_duration = account_duration + [new_account_duration]
+            #print(new_account_duration)
+            #print(features().calc_account_activity(line[16], new_account_duration))
+            account_activity = account_activity + [features().calc_account_activity(line[16], new_account_duration)]
+            #popularity = popularity + [features().calc_topic_attitude(line[13], line[4])]
+            #topic_connection = topic_connection + [features().calc_no_talk(line[13], line[14])]
+            #likes = likes + [features().calc_retweets(line[5], line[6])]
+            #hashtags = hashtags + [features().calc_mentions(line[9], line[10], line[11], line[12])]
+            #retweets_by_tweets = retweets_by_tweets + [features().calc_hashtags(line[13], line[8])]
+            #retweets_by_user = retweets_by_user + [features().find_score_for_a_user(line[1])]   
+            #mentions = mentions + [features().calc_topic_tweets_ratio(line[13], line[8])]
+            #talk = talk + [features().calc_topic_tweets_ratio(line[13], line[8])]
+        except Exception:
+            names = names + [line[1]]
+            account_duration = account_duration + [0]
+            account_activity = account_activity + [0]
+            #print(cashtag, line[1])
+                 
+    data_user = {'user_name': names, 'account_duration': account_duration, 'account_activity': account_activity,\
+                 'popularity': 0, 'topic_connection': 0, 'likes': 0,\
+                 'hashtags': 0, 'retweets_by_tweets': 0,\
+                 'retweets_by_user': 0, 'mentions': 0, 'talk': 0} 
+    try:
+        df_features_by_user_by_company[cashtag] = pd.DataFrame(data_user, columns = col)       
+    except Exception:
+        pass
+        #print(cashtag)
     
-    df_features_by_user_by_company[cashtag] = pd.DataFrame(data_user, columns = col)       
-
+print(df_features_by_user_by_company['$IRM'])
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed filling df_features_by_user_by_company: '+ str(elapsed_time))
+
+sys.exit()
 
 '''
 --------------------------------------------------------------------------------

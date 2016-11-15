@@ -34,12 +34,18 @@ if MODE == 0:
     
     for cashtag in cashtag_list:
         for name in df_user_by_company[cashtag]['user_name']:
-            user = api.get_user(name)
-            with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
-                tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
-                tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
-                                      user.statuses_count, user.listed_count, user.favourites_count])
-    
+            try:
+                user = api.get_user(name)
+                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                    tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+                    tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
+                                          user.statuses_count, user.listed_count, user.favourites_count])
+            
+            except Exception:
+                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                    tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+                    tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
+                                          'NULL', 'NULL', 'NULL'])
 else:
     csvfile = open('DB user_details.csv','a')
     i = 0
@@ -47,19 +53,41 @@ else:
         reader = csv.reader(file, delimiter=",")
         for i in reader:
             line = i
+        print(line)
             
-            
-        index = cashtag_list.index(i[0])
+        cashtag = line[0]    
+        index = cashtag_list.index(cashtag)
         user_name = line[1]
-        cashtag = line[0]
+        
         
         index_df = df_user_by_company[cashtag][df_user_by_company[cashtag]['user_name'] == user_name].index.tolist()
         
-        for cashtag in cashtag_list[index:]:
-            for name in df_user_by_company[cashtag]['user_name'].loc[index_df[0]+1:]:
+        for name in df_user_by_company[cashtag]['user_name'].loc[index_df[0]+1:]:
+            try:
                 user = api.get_user(name)
                 with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
                     tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                     tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
                                           user.statuses_count, user.listed_count, user.favourites_count])
-        
+            except Exception:
+                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                    tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+                    tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
+                                          'NULL', 'NULL', 'NULL'])
+                    
+        for cashtag in cashtag_list[(index+1):]:
+            for name in df_user_by_company[cashtag]['user_name']:
+                try:
+                    user = api.get_user(name)
+                    with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                        tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+                        tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
+                                              user.statuses_count, user.listed_count, user.favourites_count])
+                except Exception:
+                    with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                        tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+                        tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
+                                              'NULL', 'NULL', 'NULL'])
+                        
+                    
+                    
