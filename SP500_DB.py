@@ -81,12 +81,12 @@ cashtag_list.pop(0)
 
 
 prices = [float(i) for i in prices]
-
+''' PARA FICAREM SO 400
 while len(prices) > 400:
     index = np.argmin(prices)
     cashtag_list.pop(index)
     prices.pop(index)
-
+'''
 
 
 

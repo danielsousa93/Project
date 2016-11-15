@@ -3,38 +3,89 @@ import time
 import numpy as np
 from SP500_DB import cashtag_list
 from collections import Counter
-
+import csv
 start_time = time.time()
 
 
+#193.136.221.43
+#ps auxwww|grep -i 'get_user_details'
+
+'''
+--------------------------------------------------------------------------------
+------------------------------ LOADING DATAFRAMES ------------------------------
+--------------------------------------------------------------------------------
+'''
 df_tweets = pd.read_pickle('df_tweets.h5')
+
 df_user_by_company = {}
-df_tweets_company = {}
+newpath1 = r'D:\LiClipse Workspace\Project\DATAFRAMES df_user_by_company'
 for cashtag in cashtag_list:
-    df_tweets_company[cashtag] = pd.read_pickle('df_tweets_company' + cashtag + '.h5')
-    df_user_by_company[cashtag] = pd.read_pickle('df_user_by_company'+ cashtag + '.h5')
+    df_user_by_company[cashtag] = pd.read_pickle(newpath1 + '\df_user_by_company'+ cashtag + '.h5')
+
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed to read .h5 files: '+ str(elapsed_time))
 
-col = ['user_name', 'topic_connection', 'topic_attitude', 'no_talk', 'retweets', 'mentions', 'hashtags',\
-           'no_similarity_between_tweets', 'topic_tweets_ratio']
+'''
+--------------------------------------------------------------------------------
+--------------------------- LOADING DB USER_DETAILS ----------------------------
+--------------------------------------------------------------------------------
+'''
+print(df_user_by_company['$HAR'])
 
-df_features_by_company = {}
-#for cashtag in cashtag_list:
-#    df_features_by_company[cashtag] = pd.DataFrame(columns=col)
+with open('DB user_details.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    
+    cashtags_index = []
+    user_names = []
+    tweet_date = []
+    nr_of_retweets_done_to_that_tweet = []
+    tweet_text = []
+    likes = []
+    users_mentioned_by_the_user = []
+    for line in reader:
+        
+        data_user = {'created_at': line[2], 'followers': line[3],\
+             'following': line[4], 'total_nr_of_tweets_ever_done': line[5],\
+             'lists_in': line[6], 'total_nr_of_likes': line[7]}
+        columns_tweets = ['created_at', 'followers', 'following', 'total_nr_of_tweets_ever_done', 'lists_in',\
+                  'total_nr_of_likes']
+        df_user_by_company[cashtag] = pd.DataFrame(data_user, columns = columns_tweets)
+        
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'created_at'] = line[2]
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'followers'] = line[3]
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'following'] = line[4]
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'total_nr_of_tweets_ever_done'] = line[5]
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'lists_in'] = line[6]
+        df_user_by_company[line[0]].loc[df_user_by_company[line[0]]['user_name'] == line[1], 'total_nr_of_likes'] = line[7]
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed creating df_features_by_company empty: '+ str(elapsed_time))
+print('\ntime elapsed loading user_details file: '+ str(elapsed_time))
+'''
+--------------------------------------------------------------------------------
+----------------------- PREPARING df_features_by_user_by_company -----------------------
+--------------------------------------------------------------------------------
+'''
+col = ['user_name', 'account_duration', 'topic_connection', 'talk', 'retweets_by_tweets',\
+       'retweets_by_user', 'mentions', 'hashtags', 'popularity', 'likes', 'account_activity']
 
-unique_names = df_tweets['user_name'].unique()
+df_features_by_user_by_company = {}
+
+elapsed_time = time.time() - start_time
+print('\ntime elapsed creating df_features_by_user_by_company empty: '+ str(elapsed_time))
 
 
-
+'''
+--------------------------------------------------------------------------------
+--------------------------------- SIMILARITY -----------------------------------
+--------------------------------------------------------------------------------
+'''
+''' SIMILARITY
 old_user_name = []
 words_list = []
 score_array = []
 old_user_name_array = []
+
 i=0
 for line in df_tweets.sort_values(by=['user_name', 'tweet_date']).itertuples():
     text = line[4]
@@ -70,8 +121,17 @@ df_score = pd.DataFrame(data_score)
 df_score = df_score.ix[1:]
 elapsed_time = time.time() - start_time
 print('\ntime elapsed creating df_scores: '+ str(elapsed_time))
-
-
+'''
+'''
+--------------------------------------------------------------------------------
+------------------------------- CLASS FEATURES ---------------------------------
+--------------------------------------------------------------------------------
+'''
+class features:
+    def calc_account_duration_days(self, time_stamp):
+        return time.time() - float(time_stamp)
+        
+'''
 class features:
     def calc_topic_connection(self, nr_of_original_tweets_done, nr_of_conversation_tweets_done_by_the_user, nr_of_retweets_done, nr_of_tweets):
         return (nr_of_original_tweets_done + nr_of_conversation_tweets_done_by_the_user + nr_of_retweets_done)/nr_of_tweets
@@ -105,15 +165,17 @@ class features:
         return (nr_of_original_tweets_done - nr_dif_hashtags + 1) / nr_of_original_tweets_done 
     
     def calc_topic_tweets_ratio(self, nr_of_original_tweets_done, nr_dif_hashtags):
-        return nr_of_original_tweets_done / nr_dif_hashtags       
-    
+        return nr_of_original_tweets_done / nr_dif_hashtags 
+
     def find_score_for_a_user(self, user_name):  
         return df_score.loc[df_score['user_name'] == user_name, 'score'].tolist()
-        
-#print(df_score)  
-    
-#print(df_user_by_company['$WFC'])       
-              
+'''  
+
+'''
+--------------------------------------------------------------------------------
+----------------- CREATION OF DF_FEATURES_BY_USER_BY_COMPANY -------------------
+--------------------------------------------------------------------------------
+'''                
 for cashtag in cashtag_list:
     names = []
     topic_connection = []
@@ -126,36 +188,38 @@ for cashtag in cashtag_list:
     topic_tweets_ratio = []
     for line in df_user_by_company[cashtag].itertuples():
         names = names + [line[1]]
-        topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
-        topic_attitude = topic_attitude + [features().calc_topic_attitude(line[13], line[4])]
-        no_talk = no_talk + [features().calc_no_talk(line[13], line[14])]
-        retweets = retweets + [features().calc_retweets(line[5], line[6])]
-        mentions = mentions + [features().calc_mentions(line[9], line[10], line[11], line[12])]
-        hashtags = hashtags + [features().calc_hashtags(line[13], line[8])]
-        no_similarity_between_tweets = no_similarity_between_tweets + [features().find_score_for_a_user(line[1])]   
-        topic_tweets_ratio = topic_tweets_ratio + [features().calc_topic_tweets_ratio(line[13], line[8])]
+        print(features().calc_account_duration_days(line[15]))
+        #topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
+        #topic_attitude = topic_attitude + [features().calc_topic_attitude(line[13], line[4])]
+        #no_talk = no_talk + [features().calc_no_talk(line[13], line[14])]
+        #retweets = retweets + [features().calc_retweets(line[5], line[6])]
+        #mentions = mentions + [features().calc_mentions(line[9], line[10], line[11], line[12])]
+        #hashtags = hashtags + [features().calc_hashtags(line[13], line[8])]
+        #no_similarity_between_tweets = no_similarity_between_tweets + [features().find_score_for_a_user(line[1])]   
+        #topic_tweets_ratio = topic_tweets_ratio + [features().calc_topic_tweets_ratio(line[13], line[8])]
         
                   
     data_user = {'user_name': names, 'topic_connection': topic_connection, 'topic_attitude': topic_attitude, 'no_talk': no_talk, 'retweets': retweets,\
                  'mentions': mentions, 'hashtags': hashtags, 'no_similarity_between_tweets': no_similarity_between_tweets, 'topic_tweets_ratio': topic_tweets_ratio} 
     
-    df_features_by_company[cashtag] = pd.DataFrame(data_user, columns = col)       
-        #topic_connection = topic_connection + [features().calc_topic_connection(line[13], line[14], line[4], line[2])]
+    df_features_by_user_by_company[cashtag] = pd.DataFrame(data_user, columns = col)       
 
-
-#for name, df in df_companies.items():
-    #print(name)
-    # operate on DataFrame df for company name
-
-#print(df_companies['$MMM'].loc[df_companies['$MMM']['user_name'] == 'DougKass', 'topic_attitude'])
-#print(df_features_by_company['$WFC'][:100])
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed filling df_features_by_company: '+ str(elapsed_time))
+print('\ntime elapsed filling df_features_by_user_by_company: '+ str(elapsed_time))
+
+'''
+--------------------------------------------------------------------------------
+-------------------------- SAVING FILES IN .h5 FORMAT --------------------------
+--------------------------------------------------------------------------------
+'''
+newpath = r'D:\LiClipse Workspace\Project\DATAFRAMES df_features_by_user_by_company'
 
 for cashtag in cashtag_list:
-    df_features_by_company[cashtag].to_pickle('df_features_by_company'+ cashtag + '.h5')
+    df_features_by_user_by_company[cashtag].to_pickle(newpath + '\df_features_by_user_by_company'+ cashtag + '.h5')
 
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed saving file of df_features_by_company: '+ str(elapsed_time))
+print('\ntime elapsed saving files of df_features_by_user_by_company: '+ str(elapsed_time))
+
+

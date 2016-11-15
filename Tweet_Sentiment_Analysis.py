@@ -9,8 +9,8 @@ start_time = time.time()
 
 
 df_tweets = pd.read_pickle('df_tweets.h5')
-df_user_by_company = {}
 df_tweets_company = {}
+df_user_by_company = {}
 df_features_by_company = {}
 for cashtag in cashtag_list:
     df_tweets_company[cashtag] = pd.read_pickle('df_tweets_company' + cashtag + '.h5')
