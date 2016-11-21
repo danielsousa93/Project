@@ -11,6 +11,7 @@ import sqlite3
 
 
 start_time = time.time()
+
 '''
 --------------------------------------------------------------------------------
 ---------------------------- RESTORING CLASSIFIER ------------------------------
@@ -61,7 +62,7 @@ print('\ntime elapsed getting word features (Tweet_Sentiment_Classification impo
 
 
 
-print(classifier.show_most_informative_features(32))
+
 
 '''
 --------------------------------------------------------------------------------
@@ -69,12 +70,18 @@ print(classifier.show_most_informative_features(32))
 --------------------------------------------------------------------------------
 '''
 
-'''
-tweet = 'benfica'
+
+tweet = 'happy'
 print('Tweet: ' + tweet)
 print('Sentiment: ' + classifier.classify(extract_features(tweet.split())))
-print(classifier.show_most_informative_features(32))
-'''
+#print(classifier.show_most_informative_features(32))
+
+dist = classifier.prob_classify(extract_features(tweet.split()))
+for label in dist.samples():
+    print("%s: %f" % (label, dist.prob(label)))
+
+
+
 '''
 i=0
 sentiment_array = []
