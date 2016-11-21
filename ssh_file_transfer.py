@@ -13,15 +13,34 @@ ssh.connect('193.136.221.43', username='dsousa', password='tese123')
 
 
 ftp = ssh.open_sftp()
-#ftp.put('TweetsDB_gen.py', 'TweetsDB_gen.py')
-ftp.put('SP500_DB.py', 'SP500_DB.py')
-ftp.put('constituents-financials.csv', 'constituents-financials.csv')
-ftp.put('using_got.py', 'using_got.py')
-ftp.put('get_user_details.py', 'get_user_details.py')
-ftp.put('DB user_details.csv', 'DB user_details.csv')
+
+'''
+COLLECT TWEETS
+'''
+#ftp.put('SP500_DB.py', 'SP500_DB.py')
+#ftp.put('constituents-financials.csv', 'constituents-financials.csv')
+#ftp.put('get_tweets_when_errors_occured.py', 'get_tweets_when_errors_occured.py')
+#ftp.put('get_tweets_using_got.py', 'get_tweets_using_got.py')
+
+'''
+USER DETAILS -- mode = 0/1
+'''
+#ftp.put('constituents-financials.csv', 'constituents-financials.csv')
+#ftp.put('SP500_DB.py', 'SP500_DB.py')
+#ftp.put('DB user_details.csv', 'DB user_details.csv')
+#ftp.put('get_user_details.py', 'get_user_details.py')
+
+'''
+SENTIMENT ANALYSIS
+'''
+ftp.put('get_sentiment_tweets.py', 'get_sentiment_tweets.py')
+
+#ftp.put('classifier.pckl', 'classifier.pckl')
+#ftp.put('train_tweets.pckl', 'train_tweets.pckl')
+#ftp.put('Tweet_Sentiment_Classification.py', 'Tweet_Sentiment_Classification.py')
+
 
 print('Files upload done.')
-
 ftp.close()
 ssh.close()
 

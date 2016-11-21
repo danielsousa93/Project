@@ -6,14 +6,31 @@ ssh.connect('193.136.221.43', username='dsousa', password='tese123')
 
 ftp = ssh.open_sftp()
 
-#ftp.get('tweetsDB.csv', 'tweetsDB - fromremote.csv')
+'''
+COLLECT TWEETS
+'''
 #ftp.get('tweetsDB new_with_got.csv', 'tweetsDB - newfromremote.csv')
 #ftp.get('state_of_stream.csv', 'state_of_stream.csv')
-ftp.get('DB user_details.csv', 'DB user_details.csv')
-#ftp.get('nohup.out', 'nohup.out')
+
+
+'''
+USER DETAILS
+'''
+#ftp.get('DB user_details.csv', 'DB user_details.csv')
+#ftp.get('DB user_details onemonth.csv', 'DB user_details onemonth.csv')
+
+'''
+SENTIMENT ANALYSIS
+'''
+ftp.get('tweetsDB sentiment_analysis pos twoyears.csv', 'tweetsDB sentiment_analysis pos twoyears.csv')
+ftp.get('tweetsDB sentiment_analysis neg twoyears.csv', 'tweetsDB sentiment_analysis neg twoyears.csv')
+ftp.get('state_of_stream sentiment_analysis.csv', 'state_of_stream sentiment_analysis.csv')
+
+#ftp.get('classifications.pckl', 'classifications.pckl')
+
+
 
 print('.csv files downloaded.')
-
 ftp.close()
 ssh.close()
 

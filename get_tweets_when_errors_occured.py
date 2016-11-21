@@ -1,0 +1,46 @@
+from SP500_DB import *
+import time
+import csv
+start_time = time.time()
+
+#193.136.221.43
+import got3 as got
+
+with open('state_of_stream.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    for i in reader:
+        line = i
+
+i = int(line[1])
+index = cashtag_list.index(line[0]) + 1
+cashtag_list = cashtag_list[index:]
+    
+
+
+for cashtag in cashtag_list:
+    i += 1 
+    print('loading '+ cashtag)
+    tweetCriteria = got.manager.TweetCriteria().setQuerySearch(cashtag).setSince("2016-10-01").setUntil("2016-11-02")
+    #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(cashtag).setUntil("2016-11-12").setSince("2016-11-10")
+    tweets = got.manager.TweetManager.getTweets(tweetCriteria)
+   
+    for tweet in tweets:
+        text = ''
+        for word in tweet.text.split():
+            if word == '$':
+                text = text
+            elif tweet.text.split()[tweet.text.split().index(word) - 1] == '$':
+                text = text + ' $' + word 
+            else:
+                text = text + ' ' + word
+                
+        #print(text)
+        #print(cashtag)
+        with open('tweetsDB new_with_got.csv', 'a', encoding='utf-8') as csvfile:
+            tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+            tweetwriter.writerow([cashtag, tweet.username, tweet.date, tweet.retweets,\
+                                  tweet.mentions, text, tweet.favorites])
+            
+    with open('state_of_stream.csv', 'a', encoding='utf-8') as csvfile:
+        tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
+        tweetwriter.writerow([cashtag, i])

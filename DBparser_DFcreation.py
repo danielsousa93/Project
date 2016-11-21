@@ -12,7 +12,7 @@ from SP500_DB import cashtag_list
 '''
 start_time = time.time()
 
-with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file:
+with open('tweetsDB - newfromremote onemonth.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     
     cashtags_index = []

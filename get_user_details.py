@@ -6,7 +6,7 @@ import pandas as pd
 
 start_time = time.time()
 
-MODE = 1
+MODE = 0
 
 df_user_by_company = {}
 newpath1 = r'/home/dsousa/DATAFRAMES df_user_by_company'
@@ -30,26 +30,26 @@ api = tweepy.API(auth, wait_on_rate_limit = True)
 #elapsed_time = time.time() - start_time
 #print('\ntime elapsed connecting: '+ str(elapsed_time))
 if MODE == 0:
-    csvfile = open('DB user_details.csv','wb')
+    csvfile = open('DB user_details onemonth onemonth.csv','wb')
     
     for cashtag in cashtag_list:
         for name in df_user_by_company[cashtag]['user_name']:
             try:
                 user = api.get_user(name)
-                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                     tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                     tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
                                           user.statuses_count, user.listed_count, user.favourites_count])
             
             except Exception:
-                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                     tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                     tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
                                           'NULL', 'NULL', 'NULL'])
 else:
-    csvfile = open('DB user_details.csv','a')
+    csvfile = open('DB user_details onemonth.csv','a')
     i = 0
-    with open('DB user_details.csv', 'r', encoding="utf-8") as file:
+    with open('DB user_details onemonth.csv', 'r', encoding="utf-8") as file:
         reader = csv.reader(file, delimiter=",")
         for i in reader:
             line = i
@@ -65,12 +65,12 @@ else:
         for name in df_user_by_company[cashtag]['user_name'].loc[index_df[0]+1:]:
             try:
                 user = api.get_user(name)
-                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                     tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                     tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
                                           user.statuses_count, user.listed_count, user.favourites_count])
             except Exception:
-                with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                     tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                     tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
                                           'NULL', 'NULL', 'NULL'])
@@ -79,12 +79,12 @@ else:
             for name in df_user_by_company[cashtag]['user_name']:
                 try:
                     user = api.get_user(name)
-                    with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                    with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                         tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                         tweetwriter.writerow([cashtag, name, user.created_at, user.followers_count, user.friends_count,\
                                               user.statuses_count, user.listed_count, user.favourites_count])
                 except Exception:
-                    with open('DB user_details.csv', 'a', encoding='utf-8') as csvfile:
+                    with open('DB user_details onemonth.csv', 'a', encoding='utf-8') as csvfile:
                         tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
                         tweetwriter.writerow([cashtag, name, 'NULL', 'NULL', 'NULL',\
                                               'NULL', 'NULL', 'NULL'])
