@@ -59,6 +59,10 @@ def extract_features(document):
 elapsed_time = time.time() - start_time
 print('\ntime elapsed getting word features (Tweet_Sentiment_Classification import part): '+ str(elapsed_time))  
 
+
+
+print(classifier.show_most_informative_features(32))
+
 '''
 --------------------------------------------------------------------------------
 ------------------------------ CLASSIFICATION  ---------------------------------
@@ -70,6 +74,7 @@ tweet = 'benfica'
 print('Tweet: ' + tweet)
 print('Sentiment: ' + classifier.classify(extract_features(tweet.split())))
 print(classifier.show_most_informative_features(32))
+'''
 '''
 i=0
 sentiment_array = []
@@ -96,12 +101,13 @@ with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed classifying each tweet from remote: '+ str(elapsed_time))  
-
+'''
 
 '''
 --------------------------------------------------------------------------------
 --------------------------- STORING CLASSIFICATIONS ----------------------------
 --------------------------------------------------------------------------------
+'''
 '''
 f = open('classifications.pckl', 'wb')
 pickle.dump(sentiment_array, f)
@@ -109,7 +115,7 @@ f.close()
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed storing classifications: '+ str(elapsed_time)) 
-
+'''
 
 
 
