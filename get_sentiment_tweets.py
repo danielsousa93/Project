@@ -8,7 +8,7 @@ start_time = time.time()
 
 
 csvfile = open('tweetsDB sentiment_analysis pos twoyears.csv','wb')
-csvfile = open('tweetsDB sentiment_analysis neg twoyears.csv','wb')
+#csvfile = open('tweetsDB sentiment_analysis neg twoyears.csv','wb')
 csvfile = open('state_of_stream sentiment_analysis.csv','wb')
 
 
@@ -34,7 +34,7 @@ for word in pos_words:
     print('Positive: loading '+ word)
     try:
         #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(10000)
+        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(6000)
         tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     except Exception:
         print('Error in word: ' + word)
@@ -48,13 +48,13 @@ for word in pos_words:
     with open('state_of_stream sentiment_analysis.csv', 'a', encoding='utf-8') as csvfile:
         tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
         tweetwriter.writerow(['positive',word, i])
-        
+'''       
 for word in neg_words:
     i += 1 
     print('Negative: loading '+ word)
     try:
         #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17")
+        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(6000)
         tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     except Exception:
         print('-> Error in word: ' + word)
@@ -69,3 +69,4 @@ for word in neg_words:
     with open('state_of_stream sentiment_analysis.csv', 'a', encoding='utf-8') as csvfile:
         tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
         tweetwriter.writerow(['negative',word, i])
+'''

@@ -17,43 +17,7 @@ start_time = time.time()
 --------------------------------------------------------------------------------
 ------------------------ CREATE SET OF WORDS FROM FILES ------------------------
 --------------------------------------------------------------------------------
-''' 
-''' 
-csvfile = open('tweetsDB sentiment_analysis pos test.csv','wb')
-csvfile = open('tweetsDB sentiment_analysis neg test.csv','wb')
-
-with open('tweetsDB sentiment_analysis pos test.csv', 'a', encoding='utf-8') as csvfile:
-            tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Ola Soraia, tudo bem?'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Vamos ao McDonalds! Bora Benfica!'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Sou do Benfica, Soraia!'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Sinto-me bem!'])
-            
-with open('tweetsDB sentiment_analysis neg test.csv', 'a', encoding='utf-8') as csvfile:
-            tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')      
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Tu estás chateado!'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Bati com o carro!'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Queimei o dedo!'])
-            tweetwriter.writerow(['word', 'tweet.username', 'tweet.date', 'Sinto-me mal'])
-
-            
-with open('tweetsDB sentiment_analysis pos test.csv', 'r', encoding="utf-8") as file:
-    reader = csv.reader(file, delimiter=",")
-    pos_train_tweets = []
-    for line in reader:
-        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
-        pos_train_tweets = pos_train_tweets + [(text,'positive')]
-with open('tweetsDB sentiment_analysis neg test.csv', 'r', encoding="utf-8") as file:
-    reader = csv.reader(file, delimiter=",")
-    neg_train_tweets = []
-    for line in reader:
-        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
-        neg_train_tweets = neg_train_tweets + [(text,'negative')]       
-'''        
-'''
-remover o que está para cima
---------------------------------------------------------------------------------
-'''        
+'''       
 
 with open('tweetsDB sentiment_analysis pos oneweek.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")

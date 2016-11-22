@@ -30,6 +30,9 @@ with open('state_of_stream sentiment_analysis.csv', 'r', encoding="utf-8") as fi
     for i in reader:
         line = i
 
+i = int(line[2])
+pos_words = pos_words[i:]
+'''
 if line[0] == 'positive':
     i = int(line[2])
     pos_words = pos_words[i:]
@@ -38,14 +41,14 @@ elif line[0] == 'negative':
     neg_words = neg_words[(i-len(pos_words)):]
 else:
     sys.exit()
-
+'''
 if i < len(pos_words):
     for word in pos_words:
         i += 1 
         print('Positive: loading '+ word)
         try:
             #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-            tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(10000)
+            tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(6000)
             tweets = got.manager.TweetManager.getTweets(tweetCriteria)
         except Exception:
             print('Error in word: ' + word)
@@ -59,14 +62,14 @@ if i < len(pos_words):
         with open('state_of_stream sentiment_analysis.csv', 'a', encoding='utf-8') as csvfile:
             tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
             tweetwriter.writerow(['positive',word, i])
-            
+'''         
 if i >= len(pos_words):         
     for word in neg_words:
         i += 1 
         print('Negative: loading '+ word)
         try:
             #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-            tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17")
+            tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(6000)
             tweets = got.manager.TweetManager.getTweets(tweetCriteria)
         except Exception:
             print('-> Error in word: ' + word)
@@ -81,3 +84,4 @@ if i >= len(pos_words):
         with open('state_of_stream sentiment_analysis.csv', 'a', encoding='utf-8') as csvfile:
             tweetwriter = csv.writer(csvfile, lineterminator='\n', delimiter = ',')
             tweetwriter.writerow(['negative',word, i])
+'''

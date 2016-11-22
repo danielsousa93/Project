@@ -70,8 +70,8 @@ print('\ntime elapsed getting word features (Tweet_Sentiment_Classification impo
 --------------------------------------------------------------------------------
 '''
 
-
-tweet = 'happy'
+'''
+tweet = 'happy bad'
 print('Tweet: ' + tweet)
 print('Sentiment: ' + classifier.classify(extract_features(tweet.split())))
 #print(classifier.show_most_informative_features(32))
@@ -79,10 +79,10 @@ print('Sentiment: ' + classifier.classify(extract_features(tweet.split())))
 dist = classifier.prob_classify(extract_features(tweet.split()))
 for label in dist.samples():
     print("%s: %f" % (label, dist.prob(label)))
-
-
-
+    sum = dist.prob('positive') - dist.prob('negative')
+print(sum)
 '''
+
 i=0
 sentiment_array = []
 with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file:
@@ -93,36 +93,45 @@ with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file
         tweet = line[5]
         try:
             sentiment = classifier.classify(extract_features(tweet.split()))
-            if sentiment == 'positive':
-                sentiment_value = 1
-            else:
-                sentiment_value = -1
+            dist = classifier.prob_classify(extract_features(tweet.split()))
+            for label in dist.samples():
+                positive_coef = round(dist.prob('positive'), 3)
+                negative_coef = round(dist.prob('negative'), 3)
+                sentiment_coef = round(round(positive_coef, 3) - round(negative_coef, 3),3)
+                    
+                
+            if -0.2 <= sentiment_coef <= 0.2:
+                sentiment = 'neutral'
+        
             
-            sentiment_array = sentiment_array + [(line[0], line[1], line[2], sentiment, sentiment_value)]
-            
-            print(i, line[0], line[1], sentiment, sentiment_value, line[5])
+            sentiment_array = sentiment_array + [(line[0], line[1], line[2],\
+                                                sentiment, sentiment_coef, positive_coef, negative_coef)]
+            if i%100 == 0:
+                print(i, line[0])
+            #print(i, line[0], line[1], sentiment, sentiment_coef, positive_coef, negative_coef, line[5], line[2])
         except Exception:
             print('ERROR classifying cashtag: ' + line[0] + ' / user: ' + line[1])
-            sentiment_array = sentiment_array + [(line[0], line[1], 'error')]
+            sentiment_array = sentiment_array + [(line[0], line[1], 'error', 0, 0, 0, 0)]
             pass
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed classifying each tweet from remote: '+ str(elapsed_time))  
-'''
+
 
 '''
 --------------------------------------------------------------------------------
 --------------------------- STORING CLASSIFICATIONS ----------------------------
 --------------------------------------------------------------------------------
 '''
-'''
+
 f = open('classifications.pckl', 'wb')
 pickle.dump(sentiment_array, f)
 f.close()    
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed storing classifications: '+ str(elapsed_time)) 
-'''
+
+
 
 
 

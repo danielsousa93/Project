@@ -35,9 +35,15 @@ SENTIMENT ANALYSIS
 '''
 ftp.put('get_sentiment_tweets.py', 'get_sentiment_tweets.py')
 ftp.put('get_sentiment_tweets_when_errors_occured.py', 'get_sentiment_tweets_when_errors_occured.py')
+
 #ftp.put('classifier.pckl', 'classifier.pckl')
 #ftp.put('train_tweets.pckl', 'train_tweets.pckl')
 #ftp.put('Tweet_Sentiment_Classification.py', 'Tweet_Sentiment_Classification.py')
+
+#ftp.put('get_sentiment_tweets_stock_market.py', 'get_sentiment_tweets_stock_market.py')
+#ftp.put('get_sentiment_tweets_stock_market_when_errors_occured.py', 'get_sentiment_tweets_stock_market_when_errors_occured.py')
+#ftp.put('pos_stock_words.pckl', 'pos_stock_words.pckl')
+#ftp.put('neg_stock_words.pckl', 'neg_stock_words.pckl')
 
 
 print('Files upload done.')
