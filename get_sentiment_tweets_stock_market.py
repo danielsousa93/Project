@@ -26,7 +26,7 @@ for word in pos_words:
     print('Positive: loading '+ word)
     try:
         #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(1000)
+        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-22").setMaxTweets(1000)
         tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     except Exception:
         print('Error in word: ' + word)
@@ -46,7 +46,7 @@ for word in neg_words:
     print('Negative: loading '+ word)
     try:
         #tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2016-10-01").setUntil("2016-11-02")
-        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-17").setMaxTweets(250)
+        tweetCriteria = got.manager.TweetCriteria().setQuerySearch(word).setSince("2014-11-15").setUntil("2016-11-22").setMaxTweets(250)
         tweets = got.manager.TweetManager.getTweets(tweetCriteria)
     except Exception:
         print('-> Error in word: ' + word)

@@ -22,9 +22,9 @@ USER DETAILS
 '''
 SENTIMENT ANALYSIS
 '''
-ftp.get('tweetsDB sentiment_analysis pos twoyears.csv', 'tweetsDB sentiment_analysis pos twoyears.csv')
+#ftp.get('tweetsDB sentiment_analysis pos twoyears.csv', 'tweetsDB sentiment_analysis pos twoyears.csv')
 #ftp.get('tweetsDB sentiment_analysis neg twoyears.csv', 'tweetsDB sentiment_analysis neg twoyears.csv')
-ftp.get('state_of_stream sentiment_analysis.csv', 'state_of_stream sentiment_analysis.csv')
+#ftp.get('state_of_stream sentiment_analysis.csv', 'state_of_stream sentiment_analysis.csv')
 
 #ftp.get('classifications.pckl', 'classifications.pckl')
 

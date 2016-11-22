@@ -9,7 +9,6 @@ import sqlite3
 
 #193.136.221.43
 
-
 start_time = time.time()
 
 '''
@@ -105,13 +104,13 @@ with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file
         
             
             sentiment_array = sentiment_array + [(line[0], line[1], line[2],\
-                                                sentiment, sentiment_coef, positive_coef, negative_coef)]
+                                                sentiment, sentiment_coef, positive_coef, negative_coef, line[5] )]
             if i%100 == 0:
                 print(i, line[0])
             #print(i, line[0], line[1], sentiment, sentiment_coef, positive_coef, negative_coef, line[5], line[2])
         except Exception:
             print('ERROR classifying cashtag: ' + line[0] + ' / user: ' + line[1])
-            sentiment_array = sentiment_array + [(line[0], line[1], 'error', 0, 0, 0, 0)]
+            sentiment_array = sentiment_array + [(line[0], line[1], 'error', 0, 0, 0, 0, line[5])]
             pass
 
 elapsed_time = time.time() - start_time

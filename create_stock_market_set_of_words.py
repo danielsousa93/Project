@@ -33,6 +33,4 @@ f.close()
 
 print('Stock Words Set created.')
 
-print(len(pos_stock_words))
-print(len(neg_stock_words))   
-print(pos_stock_words)  
+ 
