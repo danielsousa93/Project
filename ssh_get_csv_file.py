@@ -26,11 +26,12 @@ SENTIMENT ANALYSIS
 #ftp.get('tweetsDB sentiment_analysis neg twoyears.csv', 'tweetsDB sentiment_analysis neg twoyears.csv')
 #ftp.get('state_of_stream sentiment_analysis.csv', 'state_of_stream sentiment_analysis.csv')
 
+#ftp.get('classifier.pckl', 'classifier.pckl')
+#ftp.get('train_tweets.pckl', 'train_tweets.pckl')
+#ftp.get('state_of_training.csv', 'state_of_training.csv')
+
 #ftp.get('classifications.pckl', 'classifications.pckl')
 
-#ftp.get('tweetsDB sentiment_analysis pos_stock_market twoyears.csv', 'tweetsDB sentiment_analysis pos_stock_market twoyears.csv')
-#ftp.get('tweetsDB sentiment_analysis neg_stock_market twoyears.csv', 'tweetsDB sentiment_analysis neg_stock_market twoyears.csv')
-#ftp.get('state_of_stream sentiment_analysis stock_market.csv', 'state_of_stream sentiment_analysis stock_market.csv')
 
 
 

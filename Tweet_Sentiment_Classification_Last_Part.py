@@ -37,21 +37,15 @@ for (cashtag, user_name, date, sentiment, sentiment_coef, positive_coef, negativ
 print(cashtag, sentiment_score)
 sentiment_score_set.append((old_cashtag,sentiment_score))
 
-
-sentiment_score_set.sort(key=lambda tup: tup[1], reverse = True)
+sorted_sentiment_score_set = sentiment_score_set
+sorted_sentiment_score_set.sort(key=lambda tup: tup[1], reverse = True)
 print(sentiment_score_set)
 
-
+'''
 with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     for line in reader:
         if line[0] == '$PEG':
             print(line[1], line[5])
-
-
-
-
-
-
- 
+'''
 

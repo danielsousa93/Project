@@ -8,8 +8,7 @@ import pickle
 
 #193.136.221.43
 
-#961264893
-#917502175
+
 
 start_time = time.time()
 
@@ -19,13 +18,13 @@ start_time = time.time()
 --------------------------------------------------------------------------------
 '''       
 
-with open('tweetsDB sentiment_analysis pos oneweek.csv', 'r', encoding="utf-8") as file:
+with open('tweetsDB sentiment_analysis pos twoyears.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     pos_train_tweets = []
     for line in reader:
         text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
         pos_train_tweets = pos_train_tweets + [(text,'positive')]
-with open('tweetsDB sentiment_analysis neg oneweek.csv', 'r', encoding="utf-8") as file:
+with open('tweetsDB sentiment_analysis neg twoyears.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     neg_train_tweets = []
     for line in reader:
@@ -43,6 +42,7 @@ print('\ntime elapsed reading tweets from files: '+ str(elapsed_time))
 ---------------------------- FILTER WORDS FROM SET -----------------------------
 --------------------------------------------------------------------------------
 '''
+            
 train_tweets = []
 for (words, sentiment) in pos_train_tweets + neg_train_tweets:
     words_filtered = [e.lower() for e in words.split() if len(e) >= 3]
@@ -67,6 +67,7 @@ print('\ntime elapsed filtering words from set: '+ str(elapsed_time))
 ------------------------------ GET WORD FEATURES -------------------------------
 --------------------------------------------------------------------------------
 '''
+
 def get_words_in_tweets(tweets):
     all_words = []
     for (words, sentiment) in tweets:
@@ -91,6 +92,7 @@ print('\ntime elapsed getting word features: '+ str(elapsed_time))
 -------------------------------- MODEL TRAIN  ----------------------------------
 --------------------------------------------------------------------------------
 '''
+           
 def extract_features(document):
     document_words = set(document)
     features = {}
@@ -117,6 +119,8 @@ print('\ntime elapsed in model training: '+ str(elapsed_time))
 ----------------------------- STORING CLASSIFIER -------------------------------
 --------------------------------------------------------------------------------
 '''
+
+
 #nltk.classify.accuracy(classifier, testing_set))*100
 
 f = open('classifier.pckl', 'wb')
@@ -125,4 +129,6 @@ f.close()
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed storing classifier and word_features: '+ str(elapsed_time)) 
+
+
 

@@ -36,14 +36,15 @@ SENTIMENT ANALYSIS
 #ftp.put('get_sentiment_tweets.py', 'get_sentiment_tweets.py')
 #ftp.put('get_sentiment_tweets_when_errors_occured.py', 'get_sentiment_tweets_when_errors_occured.py')
 
+#ftp.put('tweetsDB sentiment_analysis pos twoyears.csv', 'tweetsDB sentiment_analysis pos twoyears.csv')
+#ftp.put('tweetsDB sentiment_analysis neg twoyears.csv', 'tweetsDB sentiment_analysis neg twoyears.csv')
+ftp.put('Tweet_Sentiment_Model_Training.py', 'Tweet_Sentiment_Model_Training.py')
+ftp.put('sqlite-autoconf-3150100.tar.gz', 'sqlite-autoconf-3150100.tar.gz')
+
 #ftp.put('classifier.pckl', 'classifier.pckl')
 #ftp.put('train_tweets.pckl', 'train_tweets.pckl')
 #ftp.put('Tweet_Sentiment_Classification.py', 'Tweet_Sentiment_Classification.py')
 
-ftp.put('get_sentiment_tweets_stock_market.py', 'get_sentiment_tweets_stock_market.py')
-ftp.put('get_sentiment_tweets_stock_market_when_errors_occured.py', 'get_sentiment_tweets_stock_market_when_errors_occured.py')
-ftp.put('pos_stock_words.pckl', 'pos_stock_words.pckl')
-ftp.put('neg_stock_words.pckl', 'neg_stock_words.pckl')
 
 
 print('Files upload done.')
