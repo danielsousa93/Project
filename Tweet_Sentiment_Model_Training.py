@@ -102,10 +102,14 @@ def extract_features(document):
 
 #print(extract_features(['ola', 'soraia', 'tudo', 'bem']))
 
-print('Training the model...')
+print('Creating train set...')
 training_set = nltk.classify.apply_features(extract_features, train_tweets)
-#print(training_set)
 
+elapsed_time = time.time() - start_time
+print('\ntime elapsed creating training set: '+ str(elapsed_time)) 
+
+#print(training_set)
+print('Training the model...')
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 
 

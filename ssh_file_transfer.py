@@ -38,12 +38,17 @@ SENTIMENT ANALYSIS
 
 #ftp.put('tweetsDB sentiment_analysis pos twoyears.csv', 'tweetsDB sentiment_analysis pos twoyears.csv')
 #ftp.put('tweetsDB sentiment_analysis neg twoyears.csv', 'tweetsDB sentiment_analysis neg twoyears.csv')
-ftp.put('Tweet_Sentiment_Model_Training.py', 'Tweet_Sentiment_Model_Training.py')
-ftp.put('sqlite-autoconf-3150100.tar.gz', 'sqlite-autoconf-3150100.tar.gz')
+#ftp.put('Tweet_Sentiment_Model_Training.py', 'Tweet_Sentiment_Model_Training.py')
+
 
 #ftp.put('classifier.pckl', 'classifier.pckl')
 #ftp.put('train_tweets.pckl', 'train_tweets.pckl')
 #ftp.put('Tweet_Sentiment_Classification.py', 'Tweet_Sentiment_Classification.py')
+
+'''
+STOCK MARKET ANALYSIS
+'''
+ftp.put('get_data_from_yahoo.py', 'get_data_from_yahoo.py')
 
 
 

@@ -33,6 +33,12 @@ SENTIMENT ANALYSIS
 #ftp.get('classifications.pckl', 'classifications.pckl')
 
 
+'''
+STOCK MARKET ANALYSIS
+'''
+ftp.get('stock_market_data.pckl', 'stock_market_data.pckl')
+
+
 
 
 print('.csv files downloaded.')
