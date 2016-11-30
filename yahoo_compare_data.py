@@ -23,11 +23,14 @@ f = open('df_company_data.pckl', 'rb')
 df_company_data = pickle.load(f)
 f.close()
 
+f = open('df_tweets.h5', 'rb')
+df_tweets = pickle.load(f)
+f.close()
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed loading df_company_data: '+ str(elapsed_time)) 
 
-
+print(df_features_by_user_by_company['$MMM'])
 '''
 --------------------------------------------------------------------------------
 ----------------------------- DATAFRAME CREATION -------------------------------
