@@ -1,4 +1,5 @@
-import pandas as pd
+#!/usr/local/bin/python3.5
+import sys 
 import csv
 import time
 import re
@@ -7,7 +8,6 @@ import pickle
 
 
 #193.136.221.43
-
 
 
 start_time = time.time()
@@ -30,8 +30,20 @@ with open('tweetsDB sentiment_analysis neg twoyears.csv', 'r', encoding="utf-8")
     for line in reader:
         text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
         neg_train_tweets = neg_train_tweets + [(text,'negative')]   
-        
-       
+'''
+with open('tweetsDB sentiment_analysis pos test.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    pos_train_tweets = []
+    for line in reader:
+        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
+        pos_train_tweets = pos_train_tweets + [(text,'positive')]
+with open('tweetsDB sentiment_analysis neg test.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    neg_train_tweets = []
+    for line in reader:
+        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
+        neg_train_tweets = neg_train_tweets + [(text,'negative')]          
+''' 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed reading tweets from files: '+ str(elapsed_time))
 #print(pos_train_tweets)
@@ -108,7 +120,7 @@ training_set = nltk.classify.apply_features(extract_features, train_tweets)
 elapsed_time = time.time() - start_time
 print('\ntime elapsed creating training set: '+ str(elapsed_time)) 
 
-#print(training_set)
+
 print('Training the model...')
 classifier = nltk.NaiveBayesClassifier.train(training_set)
 

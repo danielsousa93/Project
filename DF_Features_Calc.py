@@ -1,4 +1,5 @@
 import pandas as pd
+import pickle
 import sys
 import time
 import numpy as np
@@ -143,7 +144,7 @@ print('\ntime elapsed loading user_details file and filling df_user_by_company: 
 ----------------------- PREPARING df_features_by_user_by_company -----------------------
 --------------------------------------------------------------------------------
 '''
-col = ['user_name', 'account_duration', 'account_activity', 'popularity', 'topic_connection',\
+col = ['account_duration', 'account_activity', 'popularity', 'topic_connection',\
        'likes', 'hashtags', 'retweets_by_tweet', 'retweets_by_user', 'mentions_by_tweet',\
        'mentions_by_user', 'talk'] 
 
@@ -337,14 +338,15 @@ for cashtag in cashtag_list:
             talk = talk + [0]
         
                 
-    data_user = {'user_name': names, 'account_duration': account_duration, 'account_activity': account_activity,\
+    data_user = {'account_duration': account_duration, 'account_activity': account_activity,\
                  'popularity': popularity, 'topic_connection': topic_connection, 'likes': likes,\
                  'hashtags': hashtags, 'retweets_by_tweet': retweets_by_tweet,\
                  'retweets_by_user': retweets_by_user, 'mentions_by_tweet': mentions_by_tweet,\
                  'mentions_by_user': mentions_by_user, 'talk': talk} 
     
     try:
-        df_features_by_user_by_company[cashtag] = pd.DataFrame(data_user, columns = col)   
+        df_features_by_user_by_company[cashtag] = pd.DataFrame(data_user, columns = col)
+        df_features_by_user_by_company[cashtag].index = names   
         print('Creation with success df_feature_by_user_by_company for ' + cashtag)
     except Exception:
         #pass
@@ -359,12 +361,15 @@ print('\ntime elapsed filling df_features_by_user_by_company: '+ str(elapsed_tim
 -------------------------- SAVING FILES IN .h5 FORMAT --------------------------
 --------------------------------------------------------------------------------
 '''
-
+'''
 newpath = r'D:\LiClipse Workspace\Project\DATAFRAMES df_features_by_user_by_company'
 
 for cashtag in cashtag_list:
     df_features_by_user_by_company[cashtag].to_pickle(newpath + '\df_features_by_user_by_company'+ cashtag + '.h5')
-
+'''
+f = open('df_features_by_user_by_company.pckl', 'wb')
+pickle.dump(df_features_by_user_by_company, f)
+f.close() 
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed saving files of df_features_by_user_by_company: '+ str(elapsed_time))
