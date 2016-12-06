@@ -52,7 +52,7 @@ for cashtag in cashtag_list:
     #sys.exit()
      
     try:
-        companies_hist_adj_close[cashtag] = df_company_data['hist_adj_close'].ix[cashtag]
+        companies_hist_adj_close[cashtag] = df_company_data['hist_close'].ix[cashtag]
     except Exception:
         print('ERROR: ', cashtag)
         pass
@@ -63,16 +63,16 @@ for cashtag in cashtag_list:
 -------- CREATE NEW DATAFRAME WITH THE DAILY SENTIMENT COEFICIENT SUM ----------
 --------------------------------------------------------------------------------
 '''   
-new_df = {}
+df_user = {}
 for cashtag in cashtag_list:
-    new_df[cashtag] = df_tweets_by_company_updated[cashtag][['user_name','tweet_day', 'sentiment_coef']].groupby(['user_name','tweet_day']).sum().copy()
+    df_user[cashtag] = df_tweets_by_company_updated[cashtag][['user_name','tweet_day', 'sentiment_coef']].groupby(['user_name','tweet_day']).sum().copy()
 
-#print(new_df['$MMM'])
+#print(df_user['$MMM'])
 #sys.exit()
 
 for cashtag in cashtag_list:
     sentiment_classification = []
-    for value in new_df[cashtag]['sentiment_coef']:
+    for value in df_user[cashtag]['sentiment_coef']:
         if -0.2 < value < 0.2:
             sentiment_classification = sentiment_classification + ['neutral']
         elif value > 0.2:
@@ -80,9 +80,9 @@ for cashtag in cashtag_list:
         else:
             sentiment_classification = sentiment_classification + ['negative']
     
-    new_df[cashtag]['sentiment'] = sentiment_classification
+    df_user[cashtag]['sentiment'] = sentiment_classification
     
-#print(new_df['$MMM'])
+#print(df_user['$MMM'])
 #sys.exit()
 
 '''
@@ -91,24 +91,27 @@ for cashtag in cashtag_list:
 --------------------------------------------------------------------------------
 '''
 date_set = df_company_data['hist_date'].ix['$FB']
-companies_hist_adj_close = {}
-change_adj_close = {}
-change_adj_close_per = {}
 for cashtag in cashtag_list:
     try:
-        companies_hist_adj_close[cashtag] = df_company_data['hist_adj_close'].ix[cashtag]
-    
-        change_adj_close[cashtag] = [(0, date_set[0])]
-        change_adj_close_per[cashtag] = [(0, date_set[0])]
+        df_collection_by_company[cashtag]['adj_close'] = df_company_data['hist_close'].ix[cashtag]
+        companies_hist_adj_close = df_company_data['hist_close'].ix[cashtag]
         
-        for i in range(0,len(companies_hist_adj_close[cashtag])-1):
-            value = companies_hist_adj_close[cashtag][i+1] - companies_hist_adj_close[cashtag][i]
-            change_adj_close[cashtag].append((value, date_set[i+1]))
-            change_adj_close_per[cashtag].append((value/companies_hist_adj_close[cashtag][i], date_set[i+1]))
-    
-        change_adj_close[cashtag] = np.array(change_adj_close[cashtag])
-        change_adj_close_per[cashtag] = np.array(change_adj_close_per[cashtag])
-    
+        change_adj_close = []
+        change_adj_close_per = []
+        for i in range(0,len(date_set)-1):
+            value = companies_hist_adj_close[i] - companies_hist_adj_close[i+1]
+            change_adj_close = change_adj_close + [value] 
+            change_adj_close_per = change_adj_close_per + [100*value/companies_hist_adj_close[i]]
+        
+        change_adj_close = change_adj_close + [0]
+        change_adj_close_per = change_adj_close_per + [0]
+        
+        df_collection_by_company[cashtag]['adj_close_var'] = change_adj_close
+        df_collection_by_company[cashtag]['adj_close_var_per'] = change_adj_close_per
+        df_collection_by_company[cashtag]['adj_close_var_norm'] = \
+            (df_collection_by_company[cashtag]['adj_close_var'] - df_collection_by_company[cashtag]['adj_close_var'].mean())/\
+            (df_collection_by_company[cashtag]['adj_close_var'].max() - df_collection_by_company[cashtag]['adj_close_var'].min())
+        
     except Exception:
         print('ERROR: ', cashtag)
         pass
@@ -117,26 +120,23 @@ for cashtag in cashtag_list:
 #print(change_adj_close['$MMM'])
 #sys.exit()
 
+#print(df_collection_by_company['$MMM'])
+#print(df_user['$MMM'])
 
+#sys.exit()
 '''
 --------------------------------------------------------------------------------
 ------------------ CREATE CHANGE_ADJ_CLOSE FOR EACH CASHTAG --------------------
 --------------------------------------------------------------------------------
 '''
-for cashtag in cashtag_list:
-    for line in new_df[cashtag].itertuples():
-        date = line[0][1]
-        for pair in change_adj_close_per[cashtag]:
-        #for pair in change_adj_close[cashtag]:
-            if pair[1] == date:
-                #print(line[0][0], date, line[2], pair[0])
-                a = 1
+    
+#print(df_collection_by_company['$MMM'])
+#print(df_user['$MMM'])
+        
+'''
+COMPARAR AMBOS OS DFs PARA VERIFICAR QUEM INFLUENCIA!!!
+'''
 
-
-
-print(df_collection_by_company['$MMM'])
-print(df_company_data.ix['$MMM'])
-print(new_df)
 
 sys.exit()
 '''

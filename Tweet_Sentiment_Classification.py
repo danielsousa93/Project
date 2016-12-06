@@ -13,22 +13,30 @@ bound = 0.2
 start_time = time.time()
 initial = start_time
 initial_cashtag = start_time
+old_cashtag_list = cashtag_list
 
 
-
+exit_flag = 0
+concatenate_flag = 1
+cashtag_list = cashtag_list[5:14]
+#print(cashtag_list[:5])
+#print(cashtag_list[5:14])
+#sys.exit()
 
 '''
 --------------------------------------------------------------------------------
 ---------------------------- RESTORING CLASSIFIER ------------------------------
 --------------------------------------------------------------------------------
 '''
-f = open('classifier.pckl', 'rb')
-classifier = pickle.load(f)
-f.close()
+if exit_flag == 0:
+    f = open('classifier.pckl', 'rb')
+    classifier = pickle.load(f)
+    f.close()
+    
+    f = open('train_tweets.pckl', 'rb')
+    train_tweets = pickle.load(f)
+    f.close()
 
-f = open('train_tweets.pckl', 'rb')
-train_tweets = pickle.load(f)
-f.close()
 
 f = open('df_tweets_by_company.pckl', 'rb')
 df_tweets_by_company = pickle.load(f)
@@ -36,6 +44,38 @@ f.close()
 
 elapsed_time = time.time() - start_time
 print('\ntime elapsed restoring classifier and tweets: '+ str(elapsed_time)) 
+
+
+
+'''
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+'''
+if exit_flag == 1:
+    #print(old_cashtag_list[0])
+    for cashtag in old_cashtag_list:
+        print(cashtag, len(df_tweets_by_company[cashtag]))
+        
+    sys.exit()
+
+if concatenate_flag == 1:
+    f = open('df_tweets_by_company_with_sentiment_analysis.pckl', 'rb')
+    df_tweets_by_company = pickle.load(f)
+    f.close()
+'''
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+'''
+
+
+
+
 
 '''
 --------------------------------------------------------------------------------
@@ -92,9 +132,9 @@ print(sum)
 #print(df_tweets_by_company['$ZTS'])
 #sys.exit()
 
-cashtag_list = cashtag_list[:5]
+
 j = 1
-old_cashtag = '$MMM'
+old_cashtag = cashtag_list[0]
 for cashtag in cashtag_list:
     if j != 1:
         print(time.time() - initial_cashtag, old_cashtag)
