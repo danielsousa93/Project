@@ -45,7 +45,7 @@ earnings_share = []
 hist_date = []
 hist_open = []
 hist_close = []
-hist_adj_Close = []
+hist_adj_close = []
 hist_low = []    
 hist_high = []
 hist_volume = []
@@ -132,7 +132,7 @@ for company_data in companies_data:
     hist_date = hist_date + [date]
     hist_open = hist_open + [open_]
     hist_close = hist_close + [close]
-    hist_adj_Close = hist_adj_Close + [adj_close]
+    hist_adj_close = hist_adj_close + [adj_close]
     hist_low = hist_low + [low]
     hist_high = hist_high + [high]
     hist_volume = hist_volume + [volume]
@@ -145,12 +145,12 @@ for company_data in companies_data:
                   'year_highest_value': year_highest_value, 'dividend_share': dividend_share,\
                   'dividend_yield': dividend_yield, 'earnings_share': earnings_share,\
                   'hist_date': hist_date, 'hist_open': hist_open, 'hist_close': hist_close,\
-                  'hist_adj_Close': hist_adj_Close, 'hist_low': hist_low,\
+                  'hist_adj_close': hist_adj_close, 'hist_low': hist_low,\
                   'hist_high': hist_high, 'hist_volume': hist_volume}
     columns_tweets = ['stock_exchange', 'market_cap', 'avg_daily_volume',\
                   'ebitda', 'year_lowest_value', 'year_highest_value',\
                   'dividend_share', 'dividend_yield', 'earnings_share',\
-                  'hist_date', 'hist_open', 'hist_close', 'hist_adj_Close',\
+                  'hist_date', 'hist_open', 'hist_close', 'hist_adj_close',\
                   'hist_low', 'hist_high', 'hist_volume']
     df_company_data = pd.DataFrame(data_user, columns = columns_tweets)
     df_company_data.index = cashtag

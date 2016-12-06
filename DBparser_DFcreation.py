@@ -3,6 +3,7 @@ import pandas as pd
 import time
 import re
 import os
+import sys
 from SP500_DB import cashtag_list
 
 '''
@@ -11,10 +12,10 @@ from SP500_DB import cashtag_list
 --------------------------------------------------------------------------------
 '''
 start_time = time.time()
-
+i=0
 with open('tweetsDB - newfromremote onemonth.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
-    
+        
     cashtags_index = []
     user_names = []
     tweet_date = []
@@ -23,6 +24,10 @@ with open('tweetsDB - newfromremote onemonth.csv', 'r', encoding="utf-8") as fil
     likes = []
     users_mentioned_by_the_user = []
     for line in reader:
+        i += 1
+        if i%500 == 0:
+            print(i,time.time() - start_time)
+        
         cashtags_index = cashtags_index + [line[0]]
         user_names = user_names + [line[1]]
         tweet_date = tweet_date + [line[2]]
@@ -96,7 +101,9 @@ columns_tweets = ['user_name', 'cashtag_index', 'tweet_date', 'tweet_text', 'nr_
                   'users_that_mentioned_the_user', 'likes']
 
 df_tweets_with_cashtag = pd.DataFrame(data_tweets, columns=columns_tweets)
-
+df_tweets_with_cashtag.to_pickle('df_tweets_by_cashtag.h5')
+print(df_tweets_with_cashtag)
+sys.exit()
 
 df_tweets = df_tweets_with_cashtag[['user_name', 'tweet_date', 'tweet_text',\
                                     'nr_of_retweets_done_to_that_tweet', 'hashtags_list',\

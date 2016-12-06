@@ -1,15 +1,21 @@
 import pandas as pd
-import csv
 import time
-import re
 import nltk
 import pickle
 from SP500_DB import cashtag_list
-import sqlite3
+import sys 
+
 
 #193.136.221.43
 
+bound = 0.2
+
 start_time = time.time()
+initial = start_time
+initial_cashtag = start_time
+
+
+
 
 '''
 --------------------------------------------------------------------------------
@@ -22,6 +28,10 @@ f.close()
 
 f = open('train_tweets.pckl', 'rb')
 train_tweets = pickle.load(f)
+f.close()
+
+f = open('df_tweets_by_company.pckl', 'rb')
+df_tweets_by_company = pickle.load(f)
 f.close()
 
 elapsed_time = time.time() - start_time
@@ -60,9 +70,6 @@ elapsed_time = time.time() - start_time
 print('\ntime elapsed getting word features (Tweet_Sentiment_Classification import part): '+ str(elapsed_time))  
 
 
-
-
-
 '''
 --------------------------------------------------------------------------------
 ------------------------------ CLASSIFICATION  ---------------------------------
@@ -82,14 +89,31 @@ for label in dist.samples():
 print(sum)
 '''
 
-i=0
-sentiment_array = []
-with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file:
-#with open('tweetsDB - newfromremote onemonth.csv', 'r', encoding="utf-8") as file:
-    reader = csv.reader(file, delimiter=",")
-    for line in reader:
+#print(df_tweets_by_company['$ZTS'])
+#sys.exit()
+
+cashtag_list = cashtag_list[:5]
+j = 1
+old_cashtag = '$MMM'
+for cashtag in cashtag_list:
+    if j != 1:
+        print(time.time() - initial_cashtag, old_cashtag)
+        initial_cashtag = time.time()
+        old_cashtag = cashtag
+        
+    print(j, ' ---> ' + cashtag + ' <---')
+    j += 1    
+    i = 0
+
+    sentiment_array = []
+    sentiment_coef_array = []
+    positive_coef_array = []
+    negative_coef_array = []
+    
+    length = len(df_tweets_by_company[cashtag])
+    
+    for tweet in df_tweets_by_company[cashtag]['tweet_text']:
         i += 1
-        tweet = line[5]
         try:
             sentiment = classifier.classify(extract_features(tweet.split()))
             dist = classifier.prob_classify(extract_features(tweet.split()))
@@ -99,38 +123,51 @@ with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file
                 sentiment_coef = round(round(positive_coef, 3) - round(negative_coef, 3),3)
                     
                 
-            if -0.2 <= sentiment_coef <= 0.2:
+            if -bound <= sentiment_coef <= bound:
                 sentiment = 'neutral'
-        
             
-            sentiment_array = sentiment_array + [(line[0], line[1], line[2],\
-                                                sentiment, sentiment_coef, positive_coef, negative_coef, line[5] )]
-            if i%100 == 0:
-                print(i, line[0])
-            #print(i, line[0], line[1], sentiment, sentiment_coef, positive_coef, negative_coef, line[5], line[2])
+            sentiment_array = sentiment_array + [sentiment]
+            sentiment_coef_array = sentiment_coef_array + [sentiment_coef]
+            positive_coef_array = positive_coef_array + [positive_coef]
+            negative_coef_array = negative_coef_array + [negative_coef]
+                        
+            
+
         except Exception:
-            print('ERROR classifying cashtag: ' + line[0] + ' / user: ' + line[1])
-            sentiment_array = sentiment_array + [(line[0], line[1], 'error', 0, 0, 0, 0, line[5])]
+            print('ERROR classifying cashtag: ' + cashtag + ' / text: ' + tweet)
+            sentiment_array = sentiment_array + [0]
+            sentiment_coef_array = sentiment_coef_array + [0]
+            positive_coef_array = positive_coef_array + [0]
+            negative_coef_array = negative_coef_array + [0]
             pass
+        
+        elapsed = time.time() - initial
+        initial = time.time()
+        print(length-i, elapsed)
+        
+        
+    df_tweets_by_company[cashtag]['sentiment'] = sentiment_array
+    df_tweets_by_company[cashtag]['sentiment_coef'] = sentiment_coef_array
+    df_tweets_by_company[cashtag]['positive_coef'] = positive_coef_array
+    df_tweets_by_company[cashtag]['negative_coef'] = negative_coef_array
+    
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed classifying each tweet from remote: '+ str(elapsed_time))  
-
+print('\ntime elapsed classifying each tweet from remote: '+ str(elapsed_time)) 
 
 '''
 --------------------------------------------------------------------------------
 --------------------------- STORING CLASSIFICATIONS ----------------------------
 --------------------------------------------------------------------------------
 '''
+f = open('df_tweets_by_company_with_sentiment_analysis.pckl', 'wb')
+pickle.dump(df_tweets_by_company, f)
+f.close() 
 
-f = open('classifications.pckl', 'wb')
-pickle.dump(sentiment_array, f)
-f.close()    
+#print(df_tweets_by_company['$MMM'])
 
 elapsed_time = time.time() - start_time
-print('\ntime elapsed storing classifications: '+ str(elapsed_time)) 
-
-
+print('\ntime elapsed creating df_tweets_by_company_with_sentiment_analysis: '+ str(elapsed_time))
 
 
 

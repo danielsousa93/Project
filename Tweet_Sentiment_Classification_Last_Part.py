@@ -2,7 +2,9 @@ import time
 import pickle
 from SP500_DB import cashtag_list
 from numpy import sort
+from pprint import pprint
 import csv
+import sys
 
 #193.136.221.43
 
@@ -39,13 +41,18 @@ sentiment_score_set.append((old_cashtag,sentiment_score))
 
 sorted_sentiment_score_set = sentiment_score_set
 sorted_sentiment_score_set.sort(key=lambda tup: tup[1], reverse = True)
-print(sentiment_score_set)
+
 
 '''
-with open('tweetsDB - newfromremote oneweek.csv', 'r', encoding="utf-8") as file:
-    reader = csv.reader(file, delimiter=",")
-    for line in reader:
-        if line[0] == '$PEG':
-            print(line[1], line[5])
+--------------------------------------------------------------------------------
+--------------------------- STORING CLASSIFICATIONS ----------------------------
+--------------------------------------------------------------------------------
 '''
+
+f = open('sentiment_score_set.pckl', 'wb')
+pickle.dump(sentiment_score_set, f)
+f.close()    
+
+elapsed_time = time.time() - start_time
+print('\ntime elapsed storing classifications: '+ str(elapsed_time)) 
 

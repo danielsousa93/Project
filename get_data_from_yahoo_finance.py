@@ -47,7 +47,7 @@ print('\ntime elapsed with yahoo finance: '+ str(elapsed_time))
 -------------------------------- STORING DATA ----------------------------------
 --------------------------------------------------------------------------------
 '''
-sys.exit()
+#sys.exit()
 f = open('stock_market_data.pckl', 'wb')
 pickle.dump(companies_data, f)
 f.close()    

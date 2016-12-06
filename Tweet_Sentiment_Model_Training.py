@@ -17,7 +17,7 @@ start_time = time.time()
 ------------------------ CREATE SET OF WORDS FROM FILES ------------------------
 --------------------------------------------------------------------------------
 '''       
-
+'''
 with open('tweetsDB sentiment_analysis pos twoyears.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
     pos_train_tweets = []
@@ -30,6 +30,20 @@ with open('tweetsDB sentiment_analysis neg twoyears.csv', 'r', encoding="utf-8")
     for line in reader:
         text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
         neg_train_tweets = neg_train_tweets + [(text,'negative')]   
+'''
+with open('tweetsDB sentiment_analysis pos twoyears 50k.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    pos_train_tweets = []
+    for line in reader:
+        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
+        pos_train_tweets = pos_train_tweets + [(text,'positive')]
+with open('tweetsDB sentiment_analysis neg twoyears 50k.csv', 'r', encoding="utf-8") as file:
+    reader = csv.reader(file, delimiter=",")
+    neg_train_tweets = []
+    for line in reader:
+        text = re.sub('[^a-zA-Z0-9áéíóúÁÉÍÓÚâêîôÂÊÎÔãõÃÕçÇàÀ \n]', '', line[3])
+        neg_train_tweets = neg_train_tweets + [(text,'negative')]   
+
 '''
 with open('tweetsDB sentiment_analysis pos test.csv', 'r', encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=",")
